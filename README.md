@@ -6,6 +6,10 @@ A responsive cyberpunk/cyborg-themed landing page created as a web-development p
 
 [View the live website](https://shakeel-ahamed-a.github.io/Cyborg-Themed-Landing-Page/)
 
+## Preview
+
+![Cyborg-Themed Landing Page](assets/screenshots/hero.png)
+
 ## Overview
 
 This project explores a futuristic cyborg interface using a dark visual system, modern typography, responsive layouts, animated interface elements, and interactive controls.
