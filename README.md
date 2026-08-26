@@ -8,7 +8,7 @@ A responsive cyberpunk/cyborg-themed landing page created as a web-development p
 
 ## Preview
 
-![Cyborg-Themed Landing Page](assets/screenshots/hero.png)
+![Cyborg-Themed Landing Page](assets/screenshots/.gitkeep/hero.png)
 
 ## Overview
 
