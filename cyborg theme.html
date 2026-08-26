@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXUS — Cyber Intelligence</title>
+<style>
+  :root {
+    --bg: #f6f2ea;
+    --panel: #fffdf8;
+    --ink: #1c1a16;
+    --muted: #6f6a5f;
+    --line: #1c1a1618;
+    --signal: #14544a;
+    --signal-soft: #14544a12;
+    --rust: #b1502a;
+    --dark: #17140f;
+    --max: 1180px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    min-height: 100vh;
+    color: var(--ink);
+    background: var(--bg);
+    font-family: "Iowan Old Style", "Georgia", "Times New Roman", serif;
+    overflow-x: hidden;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  .container { width: min(var(--max), calc(100% - 40px)); margin: auto; }
+
+  /* — nav — */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: #f6f2eaee;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-weight: 700; letter-spacing: .02em; font-size: 19px; }
+  .brand span { color: var(--signal); }
+  .links {
+    display: flex; gap: 28px; color: var(--ink);
+    font-family: system-ui, sans-serif;
+    font-size: 13px; letter-spacing: .01em;
+  }
+
+  .links a { opacity: .72; transition: opacity .2s; }
+  .links a:hover { opacity: 1; }
+
+  .nav-cta, .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 11px 20px; border: 1px solid var(--ink); border-radius: 2px;
+    background: transparent; color: var(--ink);
+    font-family: system-ui, sans-serif;
+    font-size: 13px; font-weight: 600; transition: .2s;
+  }
+
+  .btn.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+  .btn:hover { background: var(--ink); color: var(--panel); }
+  .btn.primary:hover { background: var(--signal); border-color: var(--signal); }
+
+  .menu { display: none; background: none; border: 0; color: var(--ink); font-size: 24px; }
+
+  /* — hero — */
+  .hero { padding: 168px 0 96px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 64px; align-items: center; }
+
+  .eyebrow {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    font-family: system-ui, sans-serif;
+    color: var(--signal); font-size: 12px; font-weight: 600; letter-spacing: .04em;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rust); }
+
+  h1 {
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -.01em;
+    font-weight: 400;
+  }
+
+  h1 em { font-style: italic; color: var(--signal); }
+
+  .hero-copy {
+    max-width: 540px; color: var(--muted); font-size: 17px; line-height: 1.7; margin: 26px 0 32px;
+    font-family: system-ui, sans-serif;
+  }
+
+  .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .metrics { display: flex; gap: 40px; margin-top: 52px; padding-top: 26px; border-top: 1px solid var(--line); }
+  .metric strong { display: block; font-size: 25px; font-weight: 400; }
+  .metric small {
+    display: block; margin-top: 4px; color: var(--muted); font-size: 11px;
+    font-family: system-ui, sans-serif; letter-spacing: .04em;
+  }
+
+  /* — hero visual: a flat product panel instead of a glowing orb — */
+  .visual {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 26px;
+    box-shadow: 0 22px 44px -28px #17140f3a;
+  }
+
+  .visual-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: system-ui, sans-serif; font-size: 11px; color: var(--muted);
+    letter-spacing: .04em; padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 18px;
+  }
+
+  .visual-head b { color: var(--ink); font-weight: 600; }
+  .bars { display: flex; align-items: flex-end; gap: 10px; height: 130px; margin-bottom: 20px; }
+
+  .bars i {
+    flex: 1; background: var(--signal-soft); border-top: 2px solid var(--signal); border-radius: 1px;
+  }
+
+  .bars i.hi { border-top-color: var(--rust); background: #b1502a14; }
+
+  .feed { display: flex; flex-direction: column; gap: 10px; font-family: system-ui, sans-serif; }
+
+  .feed-row {
+    display: flex; justify-content: space-between; gap: 10px;
+    font-size: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line);
+  }
+
+  .feed-row b { color: var(--ink); font-weight: 500; }
+
+  .feed-row span.tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 20px; letter-spacing: .03em;
+    background: var(--signal-soft); color: var(--signal); white-space: nowrap;
+  }
+
+  .feed-row span.tag.warn { background: #b1502a16; color: var(--rust); }
+
+  /* — sections — */
+  .section { padding: 100px 0; }
+  .section-head { display: flex; justify-content: space-between; gap: 30px; align-items: end; margin-bottom: 46px; }
+
+  .kicker {
+    font-family: system-ui, sans-serif; color: var(--signal);
+    font-size: 12px; font-weight: 600; letter-spacing: .04em;
+  }
+
+  h2 { font-size: clamp(30px, 4vw, 46px); font-weight: 400; letter-spacing: -.01em; margin-top: 8px; }
+
+  .section-head p {
+    max-width: 400px; color: var(--muted); line-height: 1.7;
+    font-family: system-ui, sans-serif; font-size: 15px;
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .card { min-height: 230px; padding: 32px; background: var(--panel); }
+
+  .card .num {
+    font-family: system-ui, sans-serif; font-size: 12px; color: var(--muted); letter-spacing: .04em; margin-bottom: 30px;
+  }
+
+  .card h3 { font-size: 19px; font-weight: 500; }
+
+  .card p {
+    margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65;
+    font-family: system-ui, sans-serif;
+  }
+
+  /* — systems / terminal — */
+  .terminal {
+    border: 1px solid var(--line); background: var(--dark); color: #ded6c4;
+    display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 4px;
+  }
+
+  .terminal-main { padding: 36px; }
+  .terminal-side { border-left: 1px solid #ffffff16; padding: 30px; background: #ffffff08; }
+
+  .bar-dots { display: flex; gap: 7px; margin-bottom: 24px; }
+  .bar-dots i { width: 8px; height: 8px; border-radius: 50%; background: #ffffff26; }
+
+  pre {
+    font: 13px/1.9 "SF Mono", Menlo, monospace; color: #c9c1ab; white-space: pre-wrap;
+  }
+
+  .go { color: #8fbfa0; }
+  .warn { color: #d99a6b; }
+
+  .stat-row {
+    display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #ffffff12;
+    font-size: 12px; font-family: system-ui, sans-serif;
+  }
+
+  .stat-row span:first-child { color: #a49c88; }
+  .stat-row b { font-weight: 500; }
+
+  /* — cta — */
+  .cta { padding: 90px 0; border-top: 1px solid var(--line); text-align: left; }
+  .cta-inner { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: end; }
+  .cta h2 { margin: 8px 0 0; }
+  .cta p { color: var(--muted); line-height: 1.7; font-family: system-ui, sans-serif; font-size: 15px; }
+
+  footer {
+    padding: 26px 0; color: var(--muted); font-size: 12px;
+    font-family: system-ui, sans-serif; border-top: 1px solid var(--line);
+  }
+
+  .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
+
+  @media (max-width: 850px) {
+    .links, .nav-cta { display: none; }
+    .menu { display: block; }
+    .hero-grid { grid-template-columns: 1fr; gap: 34px; }
+    .hero { padding-top: 120px; }
+    .cards { grid-template-columns: 1fr; }
+    .terminal { grid-template-columns: 1fr; }
+    .terminal-side { border-left: 0; border-top: 1px solid #ffffff16; }
+    .section-head { display: block; }
+    .section-head p { margin-top: 16px; }
+    .cta-inner { grid-template-columns: 1fr; }
+    .metrics { gap: 22px; }
+  }
+
+  @media (max-width: 520px) {
+    .container { width: min(var(--max), calc(100% - 28px)); }
+    h1 { font-size: 40px; }
+    .hero-copy { font-size: 15px; }
+    .metrics { justify-content: space-between; }
+    .metric strong { font-size: 20px; }
+    .section { padding: 70px 0; }
+    .terminal-main { padding: 22px; }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="#"><span>N</span>exus</a>
+
+    <nav class="links">
+      <a href="#platform">Platform</a>
+      <a href="#systems">Systems</a>
+      <a href="#contact">Talk to us</a>
+    </nav>
+
+    <a class="nav-cta" href="#contact">Request access</a>
+    <button class="menu" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="container hero-grid">
+
+      <div>
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Trusted by 40+ security teams
+        </div>
+
+        <h1>
+          Threat detection that doesn't wait for a
+          <em>postmortem.</em>
+        </h1>
+
+        <p class="hero-copy">
+          Nexus watches your infrastructure the way your best analyst would — if they never slept.
+          It correlates signals across your stack, flags what actually matters, and hands your team
+          a plan before the incident review even starts.
+        </p>
+
+        <div class="actions">
+          <a class="btn primary" href="#contact">Request access</a>
+          <a class="btn" href="#platform">See how it works</a>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <strong>4.2 min</strong>
+            <small>Median time to alert</small>
+          </div>
+
+          <div class="metric">
+            <strong>128</strong>
+            <small>Signal sources supported</small>
+          </div>
+
+          <div class="metric">
+            <strong>99.98%</strong>
+            <small>Detection uptime</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual">
+
+        <div class="visual-head">
+          <b>Live threat feed</b>
+          <span>Last 24h</span>
+        </div>
+
+        <div class="bars">
+          <i style="height:38%"></i>
+          <i style="height:52%"></i>
+          <i style="height:31%"></i>
+          <i class="hi" style="height:74%"></i>
+          <i style="height:44%"></i>
+          <i style="height:60%"></i>
+          <i style="height:29%"></i>
+          <i style="height:48%"></i>
+          <i class="hi" style="height:66%"></i>
+          <i style="height:35%"></i>
+        </div>
+
+        <div class="feed">
+
+          <div class="feed-row">
+            <span>
+              02:14 — Unusual login pattern,
+              <b>ap-south-1</b>
+            </span>
+            <span class="tag warn">Reviewed</span>
+          </div>
+
+          <div class="feed-row">
+            <span>
+              05:41 — New device paired,
+              <b>finance-vpc</b>
+            </span>
+            <span class="tag">Cleared</span>
+          </div>
+
+          <div class="feed-row">
+            <span>
+              09:03 — Rate spike on auth endpoint
+            </span>
+            <span class="tag">Auto-resolved</span>
+          </div>
+
+          <div class="feed-row">
+            <span>
+              13:27 — Policy drift,
+              <b>staging cluster</b>
+            </span>
+            <span class="tag warn">Flagged</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" id="platform">
+
+    <div class="container">
+
+      <div class="section-head">
+
+        <div>
+          <div class="kicker">Platform</div>
+          <h2>Built around how incidents actually happen.</h2>
+        </div>
+
+        <p>
+          Most tools generate noise and call it visibility. Nexus is built to cut that down —
+          three parts, working together, instead of a dozen dashboards you have to stitch
+          together yourself.
+        </p>
+
+      </div>
+
+      <div class="cards">
+
+        <article class="card">
+          <div class="num">01</div>
+          <h3>Correlation engine</h3>
+          <p>
+            Pulls events from your logs, network, and identity providers, and links the ones
+            that are actually related — instead of paging you for each one separately.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="num">02</div>
+          <h3>Live signal routing</h3>
+          <p>
+            Sends the right alert to the right person with the context they need already
+            attached, so the first Slack message isn't "can someone look into this?"
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="num">03</div>
+          <h3>Access controls</h3>
+          <p>
+            Every action Nexus takes is scoped, logged, and reversible. Nothing gets
+            auto-remediated without a rule your team wrote and can audit.
+          </p>
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="section" id="systems">
+
+    <div class="container">
+
+      <div class="section-head">
+
+        <div>
+          <div class="kicker">Systems</div>
+          <h2>One terminal, not twelve tabs.</h2>
+        </div>
+
+        <p>
+          Your on-call engineer shouldn't need six browser tabs to understand what's happening.
+          Everything below is one query away.
+        </p>
+
+      </div>
+
+      <div class="terminal">
+
+        <div class="terminal-main">
+
+          <div class="bar-dots">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+
+          <pre><span class="go">$ nexus status --live</span>
+
+core.............. <span class="go">online</span>
+agents............ 128 connected
+events/sec........ 8,492
+open incidents.... 2
+threat level...... <span class="go">low</span>
+
+<span class="warn">[stream]</span> anomaly on ap-south-1 auth
+<span class="warn">[action]</span> policy evaluated, no match
+<span class="warn">[action]</span> flagged for review, assigned to @priya
+
+<span class="go">$ _</span></pre>
+
+        </div>
+
+        <div class="terminal-side">
+
+          <div class="stat-row">
+            <span>Events processed today</span>
+            <b>8.49K/s</b>
+          </div>
+
+          <div class="stat-row">
+            <span>Connected sources</span>
+            <b>128</b>
+          </div>
+
+          <div class="stat-row">
+            <span>Policy checks run</span>
+            <b>14.2M</b>
+          </div>
+
+          <div class="stat-row">
+            <span>Incidents auto-resolved</span>
+            <b>99.7%</b>
+          </div>
+
+          <div class="stat-row">
+            <span>Last audit</span>
+            <b>Aug 19, 2026</b>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="cta" id="contact">
+
+    <div class="container cta-inner">
+
+      <div>
+        <div class="kicker">Get started</div>
+        <h2>We onboard one team at a time, on purpose.</h2>
+      </div>
+
+      <p>
+        No self-serve signup yet — we walk every new team through their first week so alerts
+        are tuned before they hit your on-call rotation. Email us and we'll set up a time this week.
+      </p>
+
+    </div>
+
+    <div class="container" style="margin-top:28px">
+      <a class="btn primary" href="mailto:hello@nexus.example">
+        Email hello@nexus.example →
+      </a>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+
+  <div class="container footer-inner">
+    <span>© 2026 Nexus Systems</span>
+    <span>Built by a small team who got tired of noisy dashboards</span>
+  </div>
+
+</footer>
+
+</body>
+</html>
